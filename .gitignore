@@ -1,0 +1,6 @@
+*.csv
+\dataset
+\.ipynb_checkpoints
+__pycache__
+\real
+\env
