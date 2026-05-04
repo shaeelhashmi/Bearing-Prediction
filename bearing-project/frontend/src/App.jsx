@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-const API_URL = "http://localhost:8000";
+const API_URL = "http://localhost:8080";
 
 const SEVERITY_CONFIG = {
   Healthy: {
