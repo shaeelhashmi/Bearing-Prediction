@@ -241,11 +241,6 @@ def load_mat_bytes(file_bytes: bytes) -> dict:
 # ── Windowed feature extraction ────────────────────────────────────────────────
 
 def features_from_signal(signal: np.ndarray) -> np.ndarray:
-    """
-    Apply a sliding window to a raw signal, extract features from each window,
-    and return the mean feature vector across all windows.
-    Mirrors process_single_file() in the notebook exactly.
-    """
     signal = np.asarray(signal, dtype=float)
     if signal.size == 0:
         return np.zeros(len(_FEAT_KEYS), dtype=float)
@@ -266,16 +261,6 @@ def features_from_signal(signal: np.ndarray) -> np.ndarray:
 
 # ── Endpoints ──────────────────────────────────────────────────────────────────
 
-@app.get("/config")
-async def get_config():
-    """
-    Return frontend configuration.
-    Labels are derived from the actual LabelEncoder class lists used during
-    training, not from hard-coded display strings.
-    """
-    return CONFIG
-
-
 @app.post("/predict")
 async def predict(
     file:      UploadFile = File(...),
@@ -283,22 +268,7 @@ async def predict(
     torque_Nm: float      = Form(...),
     force_N:   float      = Form(...),
 ):
-    """
-    Predict bearing condition from a Paderborn .mat file.
 
-    Pipeline (mirrors paderborn_pipeline.ipynb exactly):
-      1. Load .mat → extract vibration, current_1, current_2 channels
-      2. Sliding-window feature extraction (19 time+freq features per channel)
-      3. Average features across windows  → 60-dim vector (3 op. params + 19×3)
-      4. StandardScaler normalisation
-      5. PCA (5 components)
-      6. MultiOutputClassifier → (severity_int, location_int, damage_int)
-
-    Label decoding:
-      - severity   → looked up in SEVERITY_META  (0/1/2, data-driven)
-      - location   → decoded via alphabetical LabelEncoder order (LOCATION_CLASSES)
-      - damage_type→ decoded via alphabetical LabelEncoder order (DAMAGE_CLASSES)
-    """
     try:
         # 1. Read and parse the .mat file
         file_bytes = await file.read()
