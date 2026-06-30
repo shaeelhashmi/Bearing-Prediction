@@ -19,4 +19,4 @@ jobs:
           hf_token: ${{ secrets.HF_TOKEN }}
           repo_type: space
           space_sdk: gradio
-          subdirectory: backend  # Extracts exactly your backend folder
+          subdirectory: bearing-project/Backend  # Extracts exactly your backend folder
